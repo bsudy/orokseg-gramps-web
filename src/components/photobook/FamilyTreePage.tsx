@@ -48,11 +48,20 @@ export const FamilyTreePage = ({
           `page-left-${family.gramps_id} page ` +
           (pageNum % 2 === 0 ? "leftSide" : "rightSide")
         }
-        style={pageStyle}
       >
+              <div className="pageBackground" style={{
+        ...pageStyle,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        }} >
+          
         {loading && <CircularProgress />}
         {chartData && <FamilyTree tree={chartData} />}
         <span className="pageNum">{pageNum}</span>
+      </div>
       </div>
     </>
   );

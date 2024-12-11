@@ -177,9 +177,9 @@ export const PhotosPage = ({ family, pageNum, pageStyle }: PhotosPageProps) => {
           `page-left-${family.gramps_id} page photosPage ` +
           (pageNum % 2 === 0 ? "leftSide" : "rightSide")
         }
-        style={pageStyle}
+        
       >
-        <div className="photosPage-container">
+        <div className="photosPage-container" style={pageStyle}>
           {(family.media_list || []).map((mediumRef: PBMediumRef) => {
             return (
               <div

@@ -1,45 +1,20 @@
-/* .App {
-  text-align: center;
-}
+@import url("https://fonts.googleapis.com/css2?family=Charm:wght@400;700");
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root {
+  --page-size: a4 landscape;
+  --page-width: 210mm;
+  --page-height: 297mm;
+  --page-margin-in: 0;
+  --page-marin-out: 0;
+  --page-margin-top: 0;
+  --page-margin-bottom: 0;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
 
 .page {
-  width: 297mm;
-  height: 210mm;
+  width: var(--page-width);
+  height: var(--page-height);
+  padding-top: var(--page-margin-top);
+  padding-bottom: var(--page-margin-bottom);
   margin: 10mm auto;
   background-color: white;
   position: relative;
@@ -51,6 +26,33 @@
   background-position: center;
   flex-wrap: wrap;
 }
+
+.page.rightSide {
+  padding-left: var(--page-margin-in);
+  padding-right: var(--page-marin-out);
+}
+
+.page.leftSide {
+  padding-left: var(--page-marin-out);
+  padding-right: var(--page-margin-in);
+}
+
+@page {
+  size: var(--page-size);
+}
+
+@media print {
+  .page {
+    page-break-after: always;
+    margin: 0;
+  }
+  header,
+  footer,
+  .photoBook-header {
+    display: none;
+  }
+}
+
 
 .pageNum {
   bottom: 15px;
@@ -65,11 +67,12 @@
   font-size: 0.8em;
 }
 .page.rightSide .pageNum {
-  left: 25px;
+  left: calc(25px + var(--page-marin-out));
 }
 
 .page.leftSide .pageNum {
-  right: 25px;
+  margin-right: calc(25px + var(--page-margin-in));
+  right: 0;
 }
 
 .photosPage-container {
@@ -106,22 +109,6 @@
   display: block;
 }
 
-@page {
-  size: a4 landscape;
-}
 
 /* @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap'); */
 /* @import url('https://fonts.cdnfonts.com/css/freestyle-script'); */
-@import url("https://fonts.googleapis.com/css2?family=Charm:wght@400;700");
-
-@media print {
-  .page {
-    page-break-after: always;
-    margin: 0;
-  }
-  header,
-  footer,
-  .photoBook-header {
-    display: none;
-  }
-}

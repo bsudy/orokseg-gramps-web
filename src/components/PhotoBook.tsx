@@ -9,7 +9,13 @@ interface PhotoBookPageProps {
   title?: string;
 }
 
-const pageStyle = { backgroundImage: "url(/images/background.webp)" };
+const pageStyle = {
+  backgroundImage: "url(/images/background.webp)",
+  backgroundSize: "contain",
+  backgroundRepeat: "no-repeat", 
+  backgroundPositionX: "center",
+  backgroundPositionY: "center"
+ };
 
 enum PageTypeEnum {
   PHOTO,
