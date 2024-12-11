@@ -7,25 +7,48 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
-
 export interface PageSize {
-    label: string;
-    size: {
-        cssPageSize: string;
-        width: number;
-        height: number;
-    }
+  label: string;
+  size: {
+    cssPageSize: string;
+    width: number;
+    height: number;
+  };
 }
 // Define an array of page sizes
 export const pageSizes = [
-  { label: "A4 Landscape", size: { cssPageSize: 'a4 landscape', width: 297, height: 210 } },
-  { label: "A5 Landscape", size: { cssPageSize: 'a5 landscape', width: 210, height: 148 } },
-  { label: "A6 Landscape", size: { cssPageSize: 'a6 landscape', width: 148, height: 105 } },
-  { label: "A4 Portrait", size: { cssPageSize: 'a4', width: 210, height: 297 } },
-  { label: "A5 Portrait", size: { cssPageSize: 'a5', width: 148, height: 210 } },
-  { label: "A6 Portrait", size: { cssPageSize: 'a6', width: 105, height: 148 } },
-  { label: "Letter Landscape", size: { cssPageSize: 'a4 landscape', width: 216, height: 279 } },
-  { label: "Legal Landscape", size: { cssPageSize: 'a4 landscape', width: 216, height: 356 } },
+  {
+    label: "A4 Landscape",
+    size: { cssPageSize: "a4 landscape", width: 297, height: 210 },
+  },
+  {
+    label: "A5 Landscape",
+    size: { cssPageSize: "a5 landscape", width: 210, height: 148 },
+  },
+  {
+    label: "A6 Landscape",
+    size: { cssPageSize: "a6 landscape", width: 148, height: 105 },
+  },
+  {
+    label: "A4 Portrait",
+    size: { cssPageSize: "a4", width: 210, height: 297 },
+  },
+  {
+    label: "A5 Portrait",
+    size: { cssPageSize: "a5", width: 148, height: 210 },
+  },
+  {
+    label: "A6 Portrait",
+    size: { cssPageSize: "a6", width: 105, height: 148 },
+  },
+  {
+    label: "Letter Landscape",
+    size: { cssPageSize: "a4 landscape", width: 216, height: 279 },
+  },
+  {
+    label: "Legal Landscape",
+    size: { cssPageSize: "a4 landscape", width: 216, height: 356 },
+  },
 ];
 
 export const defaultPageSize = pageSizes[0];
@@ -35,9 +58,7 @@ function PageSizeSelector(props: {
   onSelect: (size: PageSize) => void;
 }) {
   // State to manage selected page size
-    // const [selectedSize, setSelectedSize] = useState("A4");
-    
-
+  // const [selectedSize, setSelectedSize] = useState("A4");
 
   // Handle the selection change
   const handleChange = (event: SelectChangeEvent<string>) => {

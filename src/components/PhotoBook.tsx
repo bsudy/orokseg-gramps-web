@@ -12,10 +12,10 @@ interface PhotoBookPageProps {
 const pageStyle = {
   backgroundImage: "url(/images/background.webp)",
   backgroundSize: "contain",
-  backgroundRepeat: "no-repeat", 
+  backgroundRepeat: "no-repeat",
   backgroundPositionX: "center",
-  backgroundPositionY: "center"
- };
+  backgroundPositionY: "center",
+};
 
 enum PageTypeEnum {
   PHOTO,
@@ -23,7 +23,6 @@ enum PageTypeEnum {
 }
 
 export const PhotoBook = ({ treeData, title }: PhotoBookPageProps) => {
-
   const families = treeData.familiesToDisplay;
   // In order to link other families we will need the pagenumbers of the families.
   const pages = useMemo(() => {

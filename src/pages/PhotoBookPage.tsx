@@ -7,7 +7,10 @@ import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "./photoBookModel";
 import { FmdBad, People } from "@mui/icons-material";
 import { tree } from "d3-hierarchy";
 import FamilySelector from "../components/photobook/FamilySelector";
-import PageSizeSelector, { defaultPageSize, PageSize } from "../components/photobook/PageSizeSelector";
+import PageSizeSelector, {
+  defaultPageSize,
+  PageSize,
+} from "../components/photobook/PageSizeSelector";
 import React from "react";
 import { TreeBuilder } from "../model/tree";
 
@@ -30,16 +33,37 @@ export function PhotoBookPage() {
 
   useEffect(() => {
     if (photoBookRef.current) {
-      photoBookRef.current.style.setProperty("--page-size", `${selectedPageSize.size.cssPageSize}`);
-      photoBookRef.current.style.setProperty("--page-width", `${selectedPageSize.size.width}mm`);
-      photoBookRef.current.style.setProperty("--page-height", `${selectedPageSize.size.height}mm`);
-      photoBookRef.current.style.setProperty("--page-margin-in", `${marginSide + binding}mm`);
-      photoBookRef.current.style.setProperty("--page-margin-out", `${marginSide}mm`);
-      photoBookRef.current.style.setProperty("--page-margin-top", `${marginTopBottom}mm`);
-      photoBookRef.current.style.setProperty("--page-margin-bottom", `${marginTopBottom}mm`);
+      photoBookRef.current.style.setProperty(
+        "--page-size",
+        `${selectedPageSize.size.cssPageSize}`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-width",
+        `${selectedPageSize.size.width}mm`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-height",
+        `${selectedPageSize.size.height}mm`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-margin-in",
+        `${marginSide + binding}mm`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-margin-out",
+        `${marginSide}mm`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-margin-top",
+        `${marginTopBottom}mm`,
+      );
+      photoBookRef.current.style.setProperty(
+        "--page-margin-bottom",
+        `${marginTopBottom}mm`,
+      );
     }
   }, [selectedPageSize, photoBookRef, marginSide, binding, marginTopBottom]);
-  
+
   const [treeData, setTreeData] = useState({
     families: [],
     people: [],
@@ -55,11 +79,10 @@ export function PhotoBookPage() {
     }
   };
 
-
   const generate = async (
     famGrampsId: string | undefined,
     down: number,
-    up: number
+    up: number,
   ) => {
     if (!famGrampsId) {
       console.error("No family id");
@@ -73,7 +96,11 @@ export function PhotoBookPage() {
         throw new Error("No client URL");
       }
 
-      const treeData = await new TreeBuilder(clientUrl).generate(famGrampsId, down, up);
+      const treeData = await new TreeBuilder(clientUrl).generate(
+        famGrampsId,
+        down,
+        up,
+      );
       setTreeData(treeData);
     } catch (e) {
       setError(e);
@@ -98,7 +125,10 @@ export function PhotoBookPage() {
           />
 
           <Box sx={{ display: "flex", alignItems: "center", margin: "1em 0" }}>
-            <PageSizeSelector onSelect={setSelectedPageSize} selectedSize={selectedPageSize} />
+            <PageSizeSelector
+              onSelect={setSelectedPageSize}
+              selectedSize={selectedPageSize}
+            />
             <TextField
               type="number"
               label="Margin side"
@@ -115,7 +145,7 @@ export function PhotoBookPage() {
               type="number"
               label="Binding"
               value={binding}
-              onChange={(e) => setBleach(parseInt(e.target.value))} 
+              onChange={(e) => setBleach(parseInt(e.target.value))}
             />
           </Box>
 

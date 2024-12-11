@@ -216,7 +216,7 @@ function createChartOptions(
     debugger;
     console.error("Error creating chart options", e);
     throw e;
-  } 
+  }
   const animate = !options.initialRender && chartOptions.animate;
   const renderer = new chartOptions.renderer({
     data,

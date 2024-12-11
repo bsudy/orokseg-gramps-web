@@ -1,17 +1,17 @@
 .personArc {
-    fill: none;
-    stroke: #000;
-    stroke-width: 1px;
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
 }
 
 .personArcInCoupleIdx0 {
-    fill: lightblue;
+  fill: lightblue;
 }
 
 .personArcInCoupleIdx1 {
-    fill: lightpink;
+  fill: lightpink;
 }
 
 .descendantPersonArc {
-    fill: lightskyblue;
+  fill: lightskyblue;
 }

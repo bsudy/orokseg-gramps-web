@@ -1,17 +1,19 @@
 import { Family, Media, MediaRef, Person } from "../api/model";
-import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "../pages/photoBookModel";
-
+import {
+  PBFamily,
+  PBMediumRef,
+  PBPerson,
+  PBTreeData,
+} from "../pages/photoBookModel";
 
 export class TreeBuilder {
+  private clientUrl: string;
 
-    private clientUrl: string;
+  constructor(clientUrl: string) {
+    this.clientUrl = clientUrl;
+  }
 
-    constructor(clientUrl: string) {
-        this.clientUrl = clientUrl;
-    }
-
-
-    async fetchMedium(mediumRef: MediaRef) {
+  async fetchMedium(mediumRef: MediaRef) {
     const res = await fetch(`${this.clientUrl}/media/byRef/${mediumRef.ref}`);
     if (!res.ok) {
       console.error(res.statusText);
@@ -24,9 +26,9 @@ export class TreeBuilder {
       contentUrl: `${this.clientUrl}/media/contentByRef/${mediumRef.ref}`,
       medium,
     } as PBMediumRef;
-  };
+  }
 
-  async fetchFamilyByGrampsId  (famId: String, treeData: PBTreeData) {
+  async fetchFamilyByGrampsId(famId: String, treeData: PBTreeData) {
     console.log("fetchFamily", famId);
     if (treeData.families.find((f) => f.gramps_id === famId)) {
       return;
@@ -40,7 +42,9 @@ export class TreeBuilder {
 
     console.log("family", famId, family);
 
-    const media_list = await Promise.all(family.media_list.map(this.fetchMedium));
+    const media_list = await Promise.all(
+      family.media_list.map(this.fetchMedium),
+    );
 
     const pbFamily = {
       ...family,
@@ -49,9 +53,9 @@ export class TreeBuilder {
 
     treeData.families.push(pbFamily);
     return pbFamily;
-  };
+  }
 
-  async fetchFamilyByRef (famId: String, treeData: PBTreeData) {
+  async fetchFamilyByRef(famId: String, treeData: PBTreeData) {
     console.log("fetchFamily", famId);
 
     if (treeData.families.find((p) => p.handle === famId)) {
@@ -67,7 +71,9 @@ export class TreeBuilder {
 
     console.log("family", famId, family);
 
-    const media_list = await Promise.all(family.media_list.map(this.fetchMedium));
+    const media_list = await Promise.all(
+      family.media_list.map(this.fetchMedium),
+    );
 
     const pbFamily = {
       ...family,
@@ -80,7 +86,7 @@ export class TreeBuilder {
 
     treeData.families.push(pbFamily);
     return pbFamily;
-  };
+  }
 
   async fetchEvent(ref?: string) {
     if (!ref) {
@@ -114,13 +120,15 @@ export class TreeBuilder {
     const person = (await res.json()) as Person;
 
     const birthEvent = await this.fetchEvent(
-      person.event_ref_list[person.birth_ref_index]?.ref
+      person.event_ref_list[person.birth_ref_index]?.ref,
     );
     const deathEvent = await this.fetchEvent(
-      person.event_ref_list[person.death_ref_index]?.ref
+      person.event_ref_list[person.death_ref_index]?.ref,
     );
 
-    const media_list = await Promise.all(person.media_list.map(this.fetchMedium));
+    const media_list = await Promise.all(
+      person.media_list.map(this.fetchMedium),
+    );
 
     const pbPerson = {
       ...person,
@@ -137,39 +145,39 @@ export class TreeBuilder {
     return pbPerson;
   }
 
-  async ensureChildren (family: PBFamily, treeData: PBTreeData) {
+  async ensureChildren(family: PBFamily, treeData: PBTreeData) {
     return await Promise.all(
       family.child_ref_list.map(async (childRef) => {
         return await this.fetchPerson(childRef.ref, treeData);
-      })
+      }),
     );
-  };
+  }
 
-  async ensureFamilies (person: PBPerson, treeData: PBTreeData) {
+  async ensureFamilies(person: PBPerson, treeData: PBTreeData) {
     return await Promise.all(
       person.family_list
         .filter((familyRef) => familyRef !== undefined)
         .map(async (familyRef) => {
           return await this.fetchFamilyByRef(familyRef, treeData);
-        })
+        }),
     );
-  };
+  }
 
-  async ensureParents (family: PBFamily, treeData: PBTreeData) {
+  async ensureParents(family: PBFamily, treeData: PBTreeData) {
     return Promise.all(
       [family.father_handle, family.mother_handle]
         .filter(
-          (parentHandle) => parentHandle !== undefined && parentHandle !== null
+          (parentHandle) => parentHandle !== undefined && parentHandle !== null,
         )
         .map(async (parentHandle) => {
           return await this.fetchPerson(parentHandle, treeData);
-        })
+        }),
     );
-  };
+  }
 
-  async ensureParentFamilies  (
+  async ensureParentFamilies(
     personRef: string,
-    treeData: PBTreeData
+    treeData: PBTreeData,
   ): Promise<PBFamily[]> {
     const person = treeData.people.find((p) => p.handle === personRef);
     if (!person) {
@@ -180,16 +188,12 @@ export class TreeBuilder {
         .filter((familyRef) => familyRef !== undefined)
         .map(async (familyRef) => {
           return await this.fetchFamilyByRef(familyRef, treeData);
-        })
+        }),
     );
     return fams.filter((f) => f !== undefined);
-  };
+  }
 
-  async goDown (
-    family: PBFamily,
-    down: number,
-    treeData: PBTreeData
-  ) {
+  async goDown(family: PBFamily, down: number, treeData: PBTreeData) {
     if (down === 0) {
       return;
     }
@@ -204,15 +208,15 @@ export class TreeBuilder {
     const families = await Promise.all(
       famRefs.map(async (familyRef) => {
         return await this.getFamilyByRef(familyRef, treeData);
-      })
+      }),
     );
 
     for (const fam of families) {
       await this.goDown(fam, down - 1, treeData);
     }
-  };
+  }
 
-  async goUp (family: PBFamily, up: number, treeData: PBTreeData) {
+  async goUp(family: PBFamily, up: number, treeData: PBTreeData) {
     if (up === 0) {
       return;
     }
@@ -227,15 +231,15 @@ export class TreeBuilder {
     const families = await Promise.all(
       famRefs.map(async (familyRef) => {
         return await this.getFamilyByRef(familyRef, treeData);
-      })
+      }),
     );
 
     for (const fam of families) {
       await this.goUp(fam, up - 1, treeData);
     }
-  };
+  }
 
-  async getFamilyByRef (ref: string, treeData: PBTreeData) {
+  async getFamilyByRef(ref: string, treeData: PBTreeData) {
     const family =
       treeData.families.find((f) => f.handle === ref) ||
       (await this.fetchFamilyByRef(ref, treeData));
@@ -248,23 +252,22 @@ export class TreeBuilder {
       await Promise.all(
         [family.father_handle, family.mother_handle].map((parentHandle) => {
           return this.ensureParentFamilies(parentHandle, treeData);
-        })
+        }),
       )
     ).reduce((acc, val) => acc.concat(val), []);
 
-    await Promise.all(parentFamilies.map((f) => this.ensureParents(f, treeData)));
+    await Promise.all(
+      parentFamilies.map((f) => this.ensureParents(f, treeData)),
+    );
 
     await this.ensureChildren(family, treeData);
     if (!treeData.familiesToDisplay.includes(family)) {
       treeData.familiesToDisplay.push(family);
     }
     return family;
-  };
+  }
 
-  async getFamilyByGrampsId (
-    famGrampsId: string,
-    treeData: PBTreeData
-  ) {
+  async getFamilyByGrampsId(famGrampsId: string, treeData: PBTreeData) {
     const family = await this.fetchFamilyByGrampsId(famGrampsId, treeData);
     if (!family) {
       throw new Error("Family not found");
@@ -275,23 +278,25 @@ export class TreeBuilder {
       await Promise.all(
         [family.father_handle, family.mother_handle].map((parentHandle) => {
           return this.ensureParentFamilies(parentHandle, treeData);
-        })
+        }),
       )
     ).reduce((acc, val) => acc.concat(val), []);
 
-    await Promise.all(parentFamilies.map((f) => this.ensureParents(f, treeData)));
+    await Promise.all(
+      parentFamilies.map((f) => this.ensureParents(f, treeData)),
+    );
 
     await this.ensureChildren(family, treeData);
     if (!treeData.familiesToDisplay.includes(family)) {
       treeData.familiesToDisplay.push(family);
     }
     return family;
-  };
+  }
 
-  public async generate (
+  public async generate(
     famGrampsId: string,
     down: number,
-    up: number
+    up: number,
   ): Promise<PBTreeData> {
     const families = [] as PBFamily[];
     const people = [] as PBPerson[];
@@ -306,7 +311,5 @@ export class TreeBuilder {
     await this.goUp(family, up, treeData);
 
     return treeData;
-    
-  };
-
+  }
 }

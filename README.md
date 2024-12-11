@@ -5,7 +5,6 @@ A React project that connect to the Örökség API and displays the data from th
 The project is making use [Material UI](https://mui.com/material-ui/).
 The component can be found [here](https://mui.com/material-ui/all-components/)
 
-
 ## Available Scripts
 
 In the project directory, you can run:

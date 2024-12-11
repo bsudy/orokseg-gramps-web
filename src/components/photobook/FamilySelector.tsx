@@ -48,7 +48,7 @@ function FamilySelector(props: {
     props.onSelect(
       families
         .map((family) => family.family)
-        .find((family) => family.gramps_id === event.target.value)
+        .find((family) => family.gramps_id === event.target.value),
     );
   };
 

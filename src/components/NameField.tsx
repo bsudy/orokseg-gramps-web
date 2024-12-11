@@ -134,7 +134,8 @@ export const NameField = (props: NameFieldProps) => {
                   }
                   helperText={
                     touched?.surname_list?.[idx]?.prefix &&
-                    (errors?.surname_list?.[idx] as FormikErrors<Surname>)?.prefix
+                    (errors?.surname_list?.[idx] as FormikErrors<Surname>)
+                      ?.prefix
                   }
                 />
                 <TextField
@@ -153,7 +154,8 @@ export const NameField = (props: NameFieldProps) => {
                   }
                   helperText={
                     touched?.surname_list?.[idx]?.surname &&
-                    (errors?.surname_list?.[idx] as FormikErrors<Surname>)?.surname
+                    (errors?.surname_list?.[idx] as FormikErrors<Surname>)
+                      ?.surname
                   }
                 />
               </span>

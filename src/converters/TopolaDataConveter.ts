@@ -20,20 +20,34 @@ class TopolaConverter {
   private indis = {} as Record<string, JsonIndi>;
   private fams = {} as Record<string, JsonFam>;
 
-  constructor(readonly treeData: { families: PBFamily[], people: PBPerson[] }, readonly pages?: Record<string, number>) {}
+  constructor(
+    readonly treeData: { families: PBFamily[]; people: PBPerson[] },
+    readonly pages?: Record<string, number>,
+  ) {}
 
-  private registerFamily(family: PBFamily, down: number): OroksegJsonFam | undefined {
+  private registerFamily(
+    family: PBFamily,
+    down: number,
+  ): OroksegJsonFam | undefined {
     if (!Object.keys(this.fams).includes(family.gramps_id)) {
-
-
-      const children = down === 0 ? [] : family.child_ref_list.map((child) => this.treeData.people.find((p) => p.handle === child.ref))
-        ?.map((child) => child?.gramps_id)
-        .filter((id) => id !== undefined) as string[] | undefined;
+      const children =
+        down === 0
+          ? []
+          : (family.child_ref_list
+              .map((child) =>
+                this.treeData.people.find((p) => p.handle === child.ref),
+              )
+              ?.map((child) => child?.gramps_id)
+              .filter((id) => id !== undefined) as string[] | undefined);
 
       const jsonFam = {
         id: family.gramps_id,
-        husb: this.treeData.people.find((p) => p.handle === family.father_handle)?.gramps_id,
-        wife: this.treeData.people.find((p) => p.handle === family.mother_handle)?.gramps_id,
+        husb: this.treeData.people.find(
+          (p) => p.handle === family.father_handle,
+        )?.gramps_id,
+        wife: this.treeData.people.find(
+          (p) => p.handle === family.mother_handle,
+        )?.gramps_id,
         children,
         // marriage: {
         //   type: "MARR",
@@ -67,7 +81,7 @@ class TopolaConverter {
     }
 
     const occupation =
-      person.attribute_list?.find((attr) => attr.type.string === 'Occupationa' )
+      person.attribute_list?.find((attr) => attr.type.string === "Occupationa")
         ?.value || undefined;
     const denomination =
       person.attribute_list?.find((attr) => attr.type.string === "Denomination")
@@ -132,16 +146,22 @@ class TopolaConverter {
     }
     return await Promise.all(
       (person.parent_family_list || [])
-        .map((family_ref) => this.treeData.families.find((f) => f.handle === family_ref))
+        .map((family_ref) =>
+          this.treeData.families.find((f) => f.handle === family_ref),
+        )
         .filter((family) => family !== undefined)
         .map(async (family) => {
           const fam = this.registerFamily(family, 0);
-          await Promise.all([family?.father_handle, family?.mother_handle].map((parent) => 
-            this.treeData.people.find((p) => p.handle === parent))
-            .filter((parent) => parent !== undefined)
-            .map(async (parent) => await this.processPerson(parent)))
+          await Promise.all(
+            [family?.father_handle, family?.mother_handle]
+              .map((parent) =>
+                this.treeData.people.find((p) => p.handle === parent),
+              )
+              .filter((parent) => parent !== undefined)
+              .map(async (parent) => await this.processPerson(parent)),
+          );
           this.indis[person.gramps_id].famc = family.gramps_id;
-      }),
+        }),
     );
   }
 
@@ -149,13 +169,15 @@ class TopolaConverter {
     await this.processPerson(person);
     await Promise.all(
       (person.family_list || [])
-        .map((familyRef) => this.treeData.families.find((fam) => fam.handle === familyRef))
+        .map((familyRef) =>
+          this.treeData.families.find((fam) => fam.handle === familyRef),
+        )
         .filter((family) => family !== undefined)
         .map(async (family) => {
           this.addFamily(family);
           // TODO what if not single parents? Shall we take the first one.
           this.indis[person.gramps_id].fams?.push(family.gramps_id);
-      }),
+        }),
     );
 
     await this.processParentFamily(person);
@@ -166,7 +188,9 @@ class TopolaConverter {
     const fam = this.registerFamily(family, down);
     if (fam) {
       if (family.father_handle) {
-        const father = this.treeData.people.find((p) => p.handle === family.father_handle);
+        const father = this.treeData.people.find(
+          (p) => p.handle === family.father_handle,
+        );
         if (father) {
           await this.processPerson(father);
           this.indis[father.gramps_id].fams?.push(family.gramps_id);
@@ -174,7 +198,9 @@ class TopolaConverter {
         }
       }
       if (family.mother_handle) {
-        const mother = this.treeData.people.find((p) => p.handle === family.mother_handle);
+        const mother = this.treeData.people.find(
+          (p) => p.handle === family.mother_handle,
+        );
         if (mother) {
           await this.processPerson(mother);
           this.indis[mother.gramps_id].fams?.push(family.gramps_id);
@@ -185,19 +211,22 @@ class TopolaConverter {
     if (down > 0) {
       await Promise.all(
         (family.child_ref_list || [])
-          .map((childRef) => this.treeData.people.find((p) => p.handle === childRef.ref))
+          .map((childRef) =>
+            this.treeData.people.find((p) => p.handle === childRef.ref),
+          )
           .filter((child) => child !== undefined)
           .map(async (child) => {
             // console.log("Add child", displayName(child.person?.name));
-            if (
-              child &&
-              !Object.keys(this.indis).includes(child.gramps_id)
-            ) {
+            if (child && !Object.keys(this.indis).includes(child.gramps_id)) {
               await this.processPerson(child);
               // spouses of children
               await Promise.all(
                 (child.family_list || [])
-                  .map((familyRef) => this.treeData.families.find((fam) => fam.handle === familyRef))
+                  .map((familyRef) =>
+                    this.treeData.families.find(
+                      (fam) => fam.handle === familyRef,
+                    ),
+                  )
                   .filter((family) => family !== undefined)
                   .map(async (family) => {
                     await this.addFamily(family, down - 1);
@@ -220,7 +249,7 @@ class TopolaConverter {
 
 export async function familyToTopolaData(
   family: PBFamily,
-  treeData: { families: PBFamily[], people: PBPerson[] },
+  treeData: { families: PBFamily[]; people: PBPerson[] },
   pages?: Record<string, number>,
 ): Promise<OroksegJsonGedcomData> {
   const converter = new TopolaConverter(treeData, pages);
@@ -230,7 +259,7 @@ export async function familyToTopolaData(
 
 export async function personToTopolaData(
   person: PBPerson,
-  treeData: { families: PBFamily[], people: PBPerson[] },
+  treeData: { families: PBFamily[]; people: PBPerson[] },
   pages?: Record<string, number>,
 ): Promise<OroksegJsonGedcomData> {
   const converter = new TopolaConverter(treeData, pages);

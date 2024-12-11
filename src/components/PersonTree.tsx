@@ -15,7 +15,12 @@ import {
 } from "topola";
 import { useNavigate } from "react-router-dom";
 import { getCutout } from "../utils/medium";
-import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "../pages/photoBookModel";
+import {
+  PBFamily,
+  PBMediumRef,
+  PBPerson,
+  PBTreeData,
+} from "../pages/photoBookModel";
 import { tree } from "d3-hierarchy";
 // import {
 //   D3ZoomEvent,
@@ -112,7 +117,10 @@ async function toTopolaIndi(person: PBPerson): Promise<JsonIndi> {
   };
 }
 
-async function toTopolaData(person: PBPerson, treeData: { families: PBFamily[], people: PBPerson[]}): Promise<JsonGedcomData> {
+async function toTopolaData(
+  person: PBPerson,
+  treeData: { families: PBFamily[]; people: PBPerson[] },
+): Promise<JsonGedcomData> {
   const indis = {} as Record<string, JsonIndi>;
   const fams = {} as Record<string, JsonFam>;
 
@@ -132,76 +140,99 @@ async function toTopolaData(person: PBPerson, treeData: { families: PBFamily[], 
 
     return await Promise.all(
       (person.parent_family_list || [])
-        .map((fam_ref) => treeData.families.find((fam) => fam.handle === fam_ref))
+        .map((fam_ref) =>
+          treeData.families.find((fam) => fam.handle === fam_ref),
+        )
         .filter((family) => family !== undefined)
         // @ts-ignore
         .map(async (family: PBFamily) => {
-        if (!Object.keys(fams).includes(family.gramps_id)) {
-          fams[family.gramps_id] = {
-            id: family.gramps_id,
-            husb: treeData.people.find((p) => p.handle === family.father_handle)?.gramps_id,
-            wife: treeData.people.find((p) => p.handle === family.mother_handle)?.gramps_id,
-            children: family.child_ref_list.map((child) => treeData.people.find((p) => p.handle === child.ref))
-              .filter((child) => child !== undefined)
-              ?.map((child) => child?.gramps_id)
-              .filter((id) => id !== undefined) as string[] | undefined,
-          };
-          await Promise.all([family.father_handle, family.mother_handle].map(async (handle) => {
-            const parent = treeData.people.find((p) => p.handle === handle);
-            if (parent) {
-              await processPerson(parent);
-            }
-          }));
-        }
-        indis[person.gramps_id].famc = family.gramps_id;
-      }),
+          if (!Object.keys(fams).includes(family.gramps_id)) {
+            fams[family.gramps_id] = {
+              id: family.gramps_id,
+              husb: treeData.people.find(
+                (p) => p.handle === family.father_handle,
+              )?.gramps_id,
+              wife: treeData.people.find(
+                (p) => p.handle === family.mother_handle,
+              )?.gramps_id,
+              children: family.child_ref_list
+                .map((child) =>
+                  treeData.people.find((p) => p.handle === child.ref),
+                )
+                .filter((child) => child !== undefined)
+                ?.map((child) => child?.gramps_id)
+                .filter((id) => id !== undefined) as string[] | undefined,
+            };
+            await Promise.all(
+              [family.father_handle, family.mother_handle].map(
+                async (handle) => {
+                  const parent = treeData.people.find(
+                    (p) => p.handle === handle,
+                  );
+                  if (parent) {
+                    await processPerson(parent);
+                  }
+                },
+              ),
+            );
+          }
+          indis[person.gramps_id].famc = family.gramps_id;
+        }),
     );
   }
 
   await processPerson(person);
   await Promise.all(
     (person.family_list || [])
-      .map((familyRef) => treeData.families.find((fam) => fam.handle === familyRef))
+      .map((familyRef) =>
+        treeData.families.find((fam) => fam.handle === familyRef),
+      )
       .filter((family) => family !== undefined)
       // @ts-ignore
       .map(async (family: PBFamily) => {
-      if (!Object.keys(fams).includes(family.gramps_id)) {
-        fams[family.gramps_id] = {
-          id: family.gramps_id,
-          husb: treeData.people.find((p) => p.handle === family.father_handle)?.gramps_id,
-          wife: treeData.people.find((p) => p.handle === family.mother_handle)?.gramps_id,
-          children: family.child_ref_list.map((child) => treeData.people.find((p) => p.handle === child.ref))
-            .filter((child) => child !== undefined)
-            ?.map((child) => child?.gramps_id)
-            .filter((id) => id !== undefined) as string[] | undefined,
-        };
-        await Promise.all([family.father_handle, family.mother_handle].map(async (handle) => {
-          const parent = treeData.people.find((p) => p.handle === handle);
-          if (parent) {
-            await processPerson(parent);
-            await processParentFamily(parent);
-          }
-        }));
-      }
+        if (!Object.keys(fams).includes(family.gramps_id)) {
+          fams[family.gramps_id] = {
+            id: family.gramps_id,
+            husb: treeData.people.find((p) => p.handle === family.father_handle)
+              ?.gramps_id,
+            wife: treeData.people.find((p) => p.handle === family.mother_handle)
+              ?.gramps_id,
+            children: family.child_ref_list
+              .map((child) =>
+                treeData.people.find((p) => p.handle === child.ref),
+              )
+              .filter((child) => child !== undefined)
+              ?.map((child) => child?.gramps_id)
+              .filter((id) => id !== undefined) as string[] | undefined,
+          };
+          await Promise.all(
+            [family.father_handle, family.mother_handle].map(async (handle) => {
+              const parent = treeData.people.find((p) => p.handle === handle);
+              if (parent) {
+                await processPerson(parent);
+                await processParentFamily(parent);
+              }
+            }),
+          );
+        }
 
-      await Promise.all(
-        (family.child_ref_list || [])
-          .map((childRef) => treeData.people.find((p) => p.handle === childRef.ref))
-          .filter((child) => child !== undefined)
-          // @ts-ignore
-          .map(async (child: PBPerson) => {
-          if (
-            child &&
-            !Object.keys(indis).includes(child?.gramps_id)
-          ) {
-            await processPerson(child);
-          }
-          indis[child.gramps_id].famc = family.gramps_id;
-        }),
-      );
-      // TODO what if not single parents? Shall we take the first one.
-      indis[person.gramps_id].fams?.push(family.gramps_id);
-    }),
+        await Promise.all(
+          (family.child_ref_list || [])
+            .map((childRef) =>
+              treeData.people.find((p) => p.handle === childRef.ref),
+            )
+            .filter((child) => child !== undefined)
+            // @ts-ignore
+            .map(async (child: PBPerson) => {
+              if (child && !Object.keys(indis).includes(child?.gramps_id)) {
+                await processPerson(child);
+              }
+              indis[child.gramps_id].famc = family.gramps_id;
+            }),
+        );
+        // TODO what if not single parents? Shall we take the first one.
+        indis[person.gramps_id].fams?.push(family.gramps_id);
+      }),
   );
 
   await processParentFamily(person);

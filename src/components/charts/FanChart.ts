@@ -1,4 +1,4 @@
-import { getAncestorsTree } from 'topola';
+import { getAncestorsTree } from "topola";
 import {
   Chart,
   ChartInfo,
@@ -6,17 +6,15 @@ import {
   ExpanderDirection,
   Fam,
   Indi,
-} from 'topola';
-import { ChartUtil, getChartInfo } from 'topola';
-import { layOutDescendants } from 'topola';
+} from "topola";
+import { ChartUtil, getChartInfo } from "topola";
+import { layOutDescendants } from "topola";
 
 /**
  * Renders an hourglass chart. It consists of an ancestor chart and
  * a descendant chart for a family.
  */
-export class FanChart<IndiT extends Indi, FamT extends Fam>
-  implements Chart
-{
+export class FanChart<IndiT extends Indi, FamT extends Fam> implements Chart {
   readonly util: ChartUtil;
 
   constructor(readonly options: ChartOptions) {
