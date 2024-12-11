@@ -1,7 +1,6 @@
-import { Maybe } from "graphql/jsutils/Maybe";
 import { Name } from "../api/model";
 
-export const displayName = (name?: Maybe<Name> | Name) => {
+export const displayName = (name?: Name) => {
   if (name) {
     const surname = displaySurname(name);
     const firstname = displayFirstname(name);
@@ -10,7 +9,7 @@ export const displayName = (name?: Maybe<Name> | Name) => {
   return "<Unknown>";
 };
 
-export function displaySurname(name?: Maybe<Name> | Name) {
+export function displaySurname(name?: Name) {
   if (name) {
     return name.surname_list
       .map((surname) => `${surname.prefix} ${surname.surname}`)
@@ -20,7 +19,7 @@ export function displaySurname(name?: Maybe<Name> | Name) {
   return "<Unknown>";
 }
 
-export function displayFirstname(name?: Maybe<Name> | Name) {
+export function displayFirstname(name?: Name) {
   if (name) {
     return `${name.first_name} ${name.suffix}`.trim();
   }

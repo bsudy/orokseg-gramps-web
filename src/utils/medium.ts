@@ -20,15 +20,19 @@ export const getCutout = (medium: PBMediumRef): Promise<string> => {
     var image = new Image();
     image.crossOrigin = "anonymous";
     image.onload = () => {
-      const w = image.width * (width / 100);
-      const h = image.height * (height / 100);
-      const x = image.width * (sx / 100);
-      const y = image.height * (sy / 100);
-      canvas.width = w;
-      canvas.height = h;
-      // console.log("w", w, "h", h, "x", x, "y", y);
-      ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
-      resolve(canvas.toDataURL());
+      try {
+        const w = image.width * (width / 100);
+        const h = image.height * (height / 100);
+        const x = image.width * (sx / 100);
+        const y = image.height * (sy / 100);
+        canvas.width = w;
+        canvas.height = h;
+        // console.log("w", w, "h", h, "x", x, "y", y);
+        ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+        resolve(canvas.toDataURL());
+      } catch (e) {
+        reject(e);
+      }
     };
     image.src = medium.contentUrl;
 
