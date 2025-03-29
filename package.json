@@ -6,7 +6,7 @@
     "name": "Barnabas Sudy"
   },
   "license": "MIT",
-  "description": "  ",
+  "description": "Örökség Gramps Plugin - Photo Book",
   "homepage": "https://bsudy.github.io/orokseg-gramps-web ",
   "dependencies": {
     "@apollo/client": "^3.11.8",
