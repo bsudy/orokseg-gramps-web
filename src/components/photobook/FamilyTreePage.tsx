@@ -22,6 +22,7 @@ export const FamilyTreePage = ({
 }: FamilyTreePageProps) => {
   const [chartData, setChartData] = useState(null as JsonGedcomData | null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null as string | null);
 
   useEffect(() => {
     if (family) {
@@ -39,7 +40,7 @@ export const FamilyTreePage = ({
         },
       );
     }
-  }, [family, pages]);
+  }, [family, pages, treeData]);
 
   return (
     <>
@@ -60,7 +61,8 @@ export const FamilyTreePage = ({
             justifyContent: "center",
           }}
         >
-          {loading && <CircularProgress />}
+          {loading && <CircularProgress sx={{ margin: "0 auto" }} />}
+          {error && <div>{error}</div>}
           {chartData && <FamilyTree tree={chartData} />}
           <span className="pageNum">{pageNum}</span>
         </div>

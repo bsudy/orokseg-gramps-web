@@ -5,6 +5,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Alert,
 } from "@mui/material";
 import { Family, Person } from "../../api/model";
 import { displayName } from "../../utils/name";
@@ -23,6 +24,7 @@ function FamilySelector(props: {
 
   const [families, setFamilies] = useState([] as ResponseFamily[]);
   const [selectedFamily, setSelectedFamily] = useState("");
+  const [error, setError] = useState(null as string | null);
 
   useEffect(() => {
     if (props.selectedFamilyGrampsId) {
@@ -35,11 +37,17 @@ function FamilySelector(props: {
     if (families.length === 0) {
       console.log("Search location", window.location.search);
       const clientUrl = new URLSearchParams(window.location.search).get("url");
+      if (!clientUrl) {
+        setError("Client URL not found");
+      }
       console.log("Fetching families from", `${clientUrl}/families`);
       fetch(`${clientUrl}/families`)
         .then((response) => response.json())
         .then((data) => setFamilies(data))
-        .catch((error) => console.error("Error fetching families:", error));
+        .catch((error) => {
+          setError("Error fetching families");
+          console.error("Error fetching families:", error)
+        });
     }
   }, []);
 
@@ -53,7 +61,8 @@ function FamilySelector(props: {
   };
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth error={error !== null}>
+      {error && <Alert severity="error">{error}</Alert>}
       <InputLabel id="family-selector-label">Family</InputLabel>
       <Select
         labelId="family-selector-label"

@@ -2,9 +2,9 @@ import { createRef, useEffect, useState } from "react";
 import { Family, Media, MediaRef, Person } from "../api/model";
 import { useNavigate, useParams } from "react-router-dom";
 import { PhotoBook } from "../components/PhotoBook";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
 import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "./photoBookModel";
-import { FmdBad, People } from "@mui/icons-material";
+import { AutoStories, FmdBad, People, Print } from "@mui/icons-material";
 import { tree } from "d3-hierarchy";
 import FamilySelector from "../components/photobook/FamilySelector";
 import PageSizeSelector, {
@@ -13,14 +13,22 @@ import PageSizeSelector, {
 } from "../components/photobook/PageSizeSelector";
 import React from "react";
 import { TreeBuilder } from "../model/tree";
+import { makeStyles } from "@material-ui/styles";
 
 export type PhotoBookParams = {
   famGrampsId: string;
 };
 
+const useStyles = makeStyles((theme) => ({
+  logo: {
+    width: "50%",
+  }
+}));
+
 export function PhotoBookPage() {
   // Get the query parameter name 'url' from the current URL
   const clientUrl = new URLSearchParams(window.location.search).get("url");
+  const classes = useStyles();
 
   const { famGrampsId } = useParams<PhotoBookParams>();
   const navigate = useNavigate();
@@ -70,7 +78,9 @@ export function PhotoBookPage() {
     familiesToDisplay: [],
   } as PBTreeData);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null as unknown | null);
+  const [error, setError] = useState(null as string | null);
+
+  const isLoaded = !loading && !error && treeData.familiesToDisplay.length > 0;
 
   const selectFamily = (family: Family | undefined) => {
     // change navigation to the selected family
@@ -103,7 +113,8 @@ export function PhotoBookPage() {
       );
       setTreeData(treeData);
     } catch (e) {
-      setError(e);
+      console.error(e);
+      setError(String(e));
     } finally {
       setLoading(false);
     }
@@ -115,14 +126,46 @@ export function PhotoBookPage() {
 
   return (
     <div>
-      <div className="photoBook-header">
-        <Typography variant="h1">Photo Book</Typography>
+      <Container maxWidth="sm" className="photoBook-header">
+        <Box display="flex" flexDirection="column" alignItems="center">
+            <img src="/logo.png" alt="Örökség Logo" className={classes.logo} />
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+            >
+                      Photo Book
+          </Typography>
+        </Box>
         {/* A number input field for the generation from Material UI */}
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", m: 1 }}>
           <FamilySelector
             onSelect={selectFamily}
             selectedFamilyGrampsId={famGrampsId}
           />
+
+
+          <Box sx={{ display: "flex", alignItems: "center", margin: "1em 0" }}>
+            <TextField
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <TextField
+              type="number"
+              label="Generation up"
+              value={generationUp}
+              onChange={(e) => setGenerationUp(parseInt(e.target.value))}
+            />
+            <TextField
+              type="number"
+              label="Generation down"
+              value={generationDown}
+              onChange={(e) => setGenerationDown(parseInt(e.target.value))}
+            />
+          </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", margin: "1em 0" }}>
             <PageSizeSelector
@@ -148,42 +191,36 @@ export function PhotoBookPage() {
               onChange={(e) => setBleach(parseInt(e.target.value))}
             />
           </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", margin: "1em 0" }}>
-            <TextField
-              label="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <TextField
-              type="number"
-              label="Generation up"
-              value={generationUp}
-              onChange={(e) => setGenerationUp(parseInt(e.target.value))}
-            />
-            <TextField
-              type="number"
-              label="Generation down"
-              value={generationDown}
-              onChange={(e) => setGenerationDown(parseInt(e.target.value))}
-            />
-            <Button
-              onClick={() =>
-                generate(famGrampsId, generationDown, generationUp)
-              }
-              variant="contained"
-            >
-              Generate
-            </Button>
-          </Box>
+          {error !== null &&
+            <Alert sx={{ mb: 1 }} severity="error">Failed to generate photo book: {String(error)}</Alert>
+          }
+          <Button
+            onClick={() =>
+              generate(famGrampsId, generationDown, generationUp)
+            }
+            startIcon={<AutoStories />}
+            loading={loading}
+            variant="contained"
+            sx={{ mb: 1 }}
+            color={error ? "error" : "primary"}
+          >
+            Generate  Photo Book
+          </Button>
+          <Button
+            onClick={() => window.print()}
+            variant="contained"
+            startIcon={<Print />}
+            disabled={!isLoaded}
+          >
+            Print
+          </Button>
         </Box>
-      </div>
+      </Container>
 
       <div className="photoBook" ref={photoBookRef}>
         {loading && <div>Loading...</div>}
-        {!!error && <div>Error: {`${error}`}</div>}
 
-        {!error && !loading && <PhotoBook treeData={treeData} title={title} />}
+        {isLoaded && <PhotoBook treeData={treeData} title={title} />}
       </div>
     </div>
   );

@@ -45,35 +45,6 @@ function App() {
 
   return (
     <div className={classes.root}>
-      <header className={classes.header}>
-        <CssBaseline />
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Örökség
-            </Typography>
-            <Button
-              color="inherit"
-              onClick={(evt) => {
-                evt.preventDefault();
-                router.navigate("/");
-              }}
-            >
-              Home
-            </Button>
-            <Button
-              color="inherit"
-              onClick={(evt) => {
-                evt.preventDefault();
-                router.navigate("/people");
-              }}
-            >
-              People
-            </Button>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-      </header>
       <main>
         <RouterProvider router={router} />
       </main>
