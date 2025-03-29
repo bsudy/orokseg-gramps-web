@@ -189,8 +189,9 @@ class FanChart {
         .attr("d", textArc as unknown as string)
         .attr("fill", "none");
 
-      // @ts-ignore
-      const maxTextLength = this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
+      const maxTextLength =
+        // @ts-ignore
+        this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
 
       const textElement = this.svg
         .append("text")
@@ -262,8 +263,9 @@ class FanChart {
         // .attr("stroke-width", 1) // Add border width
         .attr("fill", "none");
 
-      // @ts-ignore
-      const maxTextLength = this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
+      const maxTextLength =
+        // @ts-ignore
+        this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
 
       // @ts-ignore
       const textElement = this.svg

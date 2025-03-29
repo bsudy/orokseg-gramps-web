@@ -2,7 +2,14 @@ import { createRef, useEffect, useState } from "react";
 import { Family, Media, MediaRef, Person } from "../api/model";
 import { useNavigate, useParams } from "react-router-dom";
 import { PhotoBook } from "../components/PhotoBook";
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "./photoBookModel";
 import { AutoStories, FmdBad, People, Print } from "@mui/icons-material";
 import { tree } from "d3-hierarchy";
@@ -13,22 +20,14 @@ import PageSizeSelector, {
 } from "../components/photobook/PageSizeSelector";
 import React from "react";
 import { TreeBuilder } from "../model/tree";
-import { makeStyles } from "@material-ui/styles";
 
 export type PhotoBookParams = {
   famGrampsId: string;
 };
 
-const useStyles = makeStyles((theme) => ({
-  logo: {
-    width: "50%",
-  }
-}));
-
 export function PhotoBookPage() {
   // Get the query parameter name 'url' from the current URL
   const clientUrl = new URLSearchParams(window.location.search).get("url");
-  const classes = useStyles();
 
   const { famGrampsId } = useParams<PhotoBookParams>();
   const navigate = useNavigate();
@@ -128,15 +127,15 @@ export function PhotoBookPage() {
     <div>
       <Container maxWidth="sm" className="photoBook-header">
         <Box display="flex" flexDirection="column" alignItems="center">
-            <img src="/logo.png" alt="Örökség Logo" className={classes.logo} />
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-                      Photo Book
+          <img src="/logo.png" alt="Örökség Logo" style={{ width: "50%" }} />
+          <Typography
+            component="h1"
+            variant="h2"
+            align="center"
+            color="textPrimary"
+            gutterBottom
+          >
+            Photo Book
           </Typography>
         </Box>
         {/* A number input field for the generation from Material UI */}
@@ -145,7 +144,6 @@ export function PhotoBookPage() {
             onSelect={selectFamily}
             selectedFamilyGrampsId={famGrampsId}
           />
-
 
           <Box sx={{ display: "flex", alignItems: "center", margin: "1em 0" }}>
             <TextField
@@ -191,20 +189,20 @@ export function PhotoBookPage() {
               onChange={(e) => setBleach(parseInt(e.target.value))}
             />
           </Box>
-          {error !== null &&
-            <Alert sx={{ mb: 1 }} severity="error">Failed to generate photo book: {String(error)}</Alert>
-          }
+          {error !== null && (
+            <Alert sx={{ mb: 1 }} severity="error">
+              Failed to generate photo book: {String(error)}
+            </Alert>
+          )}
           <Button
-            onClick={() =>
-              generate(famGrampsId, generationDown, generationUp)
-            }
+            onClick={() => generate(famGrampsId, generationDown, generationUp)}
             startIcon={<AutoStories />}
             loading={loading}
             variant="contained"
             sx={{ mb: 1 }}
             color={error ? "error" : "primary"}
           >
-            Generate  Photo Book
+            Generate Photo Book
           </Button>
           <Button
             onClick={() => window.print()}

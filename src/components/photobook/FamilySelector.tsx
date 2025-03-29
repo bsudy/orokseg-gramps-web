@@ -46,7 +46,7 @@ function FamilySelector(props: {
         .then((data) => setFamilies(data))
         .catch((error) => {
           setError("Error fetching families");
-          console.error("Error fetching families:", error)
+          console.error("Error fetching families:", error);
         });
     }
   }, []);

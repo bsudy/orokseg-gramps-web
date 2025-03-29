@@ -1,9 +1,7 @@
-import React from "react";
 import { Typography, Container, Button, Box } from "@mui/material";
-import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
+const styles = {
   root: {
     flexGrow: 1,
   },
@@ -27,17 +25,15 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     padding: 32,
   },
-}));
+};
 
 export default function Home() {
-  const classes = useStyles();
-
   return (
     <>
-      <div className={classes.heroContent}>
+      <div style={styles.heroContent}>
         <Container maxWidth="sm">
           <Box display="flex" flexDirection="column" alignItems="center">
-            <img src="/ logo.png" alt="Örökség Logo" className={classes.logo} />
+            <img src="/ logo.png" alt="Örökség Logo" style={styles.logo} />
             <Typography
               component="h1"
               variant="h2"
@@ -55,9 +51,9 @@ export default function Home() {
             >
               Explore your family heritage and history
             </Typography>
-            <div className={classes.heroButtons}>
-              <Button 
-                variant="contained" 
+            <div style={styles.heroButtons}>
+              <Button
+                variant="contained"
                 color="primary"
                 component={Link}
                 to="/families/default/book/"
@@ -70,4 +66,4 @@ export default function Home() {
       </div>
     </>
   );
-};
+}
