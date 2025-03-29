@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { FamilyTreePage } from "./photobook/FamilyTreePage";
 import { PhotosPage } from "./photobook/PhotosPage";
 import { TitlePage } from "./photobook/TitlePage";
-import { PBFamily, PBPerson, PBTreeData } from "../pages/photoBookModel";
+import { PBFamily, PBTreeData } from "../pages/photoBookModel";
+import { assetPath } from "../utils/assetPath";
 
 interface PhotoBookPageProps {
   treeData: PBTreeData;
@@ -10,7 +11,7 @@ interface PhotoBookPageProps {
 }
 
 const pageStyle = {
-  backgroundImage: "url(/images/background.webp)",
+  backgroundImage: `url(${assetPath("/images/background.webp")})`,
   backgroundSize: "contain",
   backgroundRepeat: "no-repeat",
   backgroundPositionX: "center",

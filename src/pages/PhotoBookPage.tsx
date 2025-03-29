@@ -1,5 +1,5 @@
 import { createRef, useEffect, useState } from "react";
-import { Family, Media, MediaRef, Person } from "../api/model";
+import { Family } from "../api/model";
 import { useNavigate, useParams } from "react-router-dom";
 import { PhotoBook } from "../components/PhotoBook";
 import {
@@ -10,16 +10,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { PBFamily, PBMediumRef, PBPerson, PBTreeData } from "./photoBookModel";
-import { AutoStories, FmdBad, People, Print } from "@mui/icons-material";
-import { tree } from "d3-hierarchy";
+import { PBTreeData } from "./photoBookModel";
+import { AutoStories, Print } from "@mui/icons-material";
 import FamilySelector from "../components/photobook/FamilySelector";
 import PageSizeSelector, {
   defaultPageSize,
-  PageSize,
 } from "../components/photobook/PageSizeSelector";
-import React from "react";
 import { TreeBuilder } from "../model/tree";
+import { assetPath } from "../utils/assetPath";
 
 export type PhotoBookParams = {
   famGrampsId: string;
@@ -127,7 +125,7 @@ export function PhotoBookPage() {
     <div>
       <Container maxWidth="sm" className="photoBook-header">
         <Box display="flex" flexDirection="column" alignItems="center">
-          <img src="/logo.png" alt="Örökség Logo" style={{ width: "50%" }} />
+          <img src={assetPath('/logo.png')} alt="Örökség Logo" style={{ width: "50%" }} />
           <Typography
             component="h1"
             variant="h2"

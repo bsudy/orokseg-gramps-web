@@ -1,5 +1,6 @@
 import { Typography, Container, Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import { assetPath } from "../utils/assetPath";
 
 const styles = {
   root: {
@@ -33,7 +34,7 @@ export default function Home() {
       <div style={styles.heroContent}>
         <Container maxWidth="sm">
           <Box display="flex" flexDirection="column" alignItems="center">
-            <img src="/ logo.png" alt="Örökség Logo" style={styles.logo} />
+            <img src={assetPath('/logo.png')} alt="Örökség Logo" style={styles.logo} />
             <Typography
               component="h1"
               variant="h2"
