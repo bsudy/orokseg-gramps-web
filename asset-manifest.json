@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/orokseg-gramps-web/static/css/main.7fe1e73f.css",
-    "main.js": "/orokseg-gramps-web/static/js/main.5ca62623.js",
+    "main.js": "/orokseg-gramps-web/static/js/main.2b51b997.js",
     "static/js/453.a93ea62b.chunk.js": "/orokseg-gramps-web/static/js/453.a93ea62b.chunk.js",
     "static/media/roboto-latin-700-normal.woff2": "/orokseg-gramps-web/static/media/roboto-latin-700-normal.4535474e1cf8598695ad.woff2",
     "static/media/roboto-latin-500-normal.woff2": "/orokseg-gramps-web/static/media/roboto-latin-500-normal.7077203b1982951ecf76.woff2",
@@ -61,11 +61,11 @@
     "static/media/roboto-greek-ext-400-normal.woff": "/orokseg-gramps-web/static/media/roboto-greek-ext-400-normal.16eb83b4a3b1ea994243.woff",
     "index.html": "/orokseg-gramps-web/index.html",
     "main.7fe1e73f.css.map": "/orokseg-gramps-web/static/css/main.7fe1e73f.css.map",
-    "main.5ca62623.js.map": "/orokseg-gramps-web/static/js/main.5ca62623.js.map",
+    "main.2b51b997.js.map": "/orokseg-gramps-web/static/js/main.2b51b997.js.map",
     "453.a93ea62b.chunk.js.map": "/orokseg-gramps-web/static/js/453.a93ea62b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7fe1e73f.css",
-    "static/js/main.5ca62623.js"
+    "static/js/main.2b51b997.js"
   ]
 }
