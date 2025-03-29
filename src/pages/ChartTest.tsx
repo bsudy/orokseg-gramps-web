@@ -190,8 +190,7 @@ class FanChart {
         .attr("fill", "none");
 
       // @ts-ignore
-      const maxTextLength =
-        this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
+      const maxTextLength = this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
 
       const textElement = this.svg
         .append("text")
@@ -264,8 +263,7 @@ class FanChart {
         .attr("fill", "none");
 
       // @ts-ignore
-      const maxTextLength =
-        this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
+      const maxTextLength = this.svg.select(`#${textPathId}`).node().getTotalLength() * 0.45;
 
       // @ts-ignore
       const textElement = this.svg

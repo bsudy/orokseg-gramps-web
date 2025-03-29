@@ -43,7 +43,7 @@ export class TreeBuilder {
     console.log("family", famId, family);
 
     const media_list = await Promise.all(
-      family.media_list.map(this.fetchMedium),
+      family.media_list.map((ref) => this.fetchMedium(ref))
     );
 
     const pbFamily = {
@@ -72,7 +72,7 @@ export class TreeBuilder {
     console.log("family", famId, family);
 
     const media_list = await Promise.all(
-      family.media_list.map(this.fetchMedium),
+      family.media_list.map((ref) => this.fetchMedium(ref))
     );
 
     const pbFamily = {
@@ -120,14 +120,14 @@ export class TreeBuilder {
     const person = (await res.json()) as Person;
 
     const birthEvent = await this.fetchEvent(
-      person.event_ref_list[person.birth_ref_index]?.ref,
+      person.event_ref_list[person.birth_ref_index]?.ref
     );
     const deathEvent = await this.fetchEvent(
-      person.event_ref_list[person.death_ref_index]?.ref,
+      person.event_ref_list[person.death_ref_index]?.ref
     );
 
     const media_list = await Promise.all(
-      person.media_list.map(this.fetchMedium),
+      person.media_list.map((ref) => this.fetchMedium(ref))
     );
 
     const pbPerson = {
@@ -149,7 +149,7 @@ export class TreeBuilder {
     return await Promise.all(
       family.child_ref_list.map(async (childRef) => {
         return await this.fetchPerson(childRef.ref, treeData);
-      }),
+      })
     );
   }
 
@@ -159,7 +159,7 @@ export class TreeBuilder {
         .filter((familyRef) => familyRef !== undefined)
         .map(async (familyRef) => {
           return await this.fetchFamilyByRef(familyRef, treeData);
-        }),
+        })
     );
   }
 
@@ -167,17 +167,17 @@ export class TreeBuilder {
     return Promise.all(
       [family.father_handle, family.mother_handle]
         .filter(
-          (parentHandle) => parentHandle !== undefined && parentHandle !== null,
+          (parentHandle) => parentHandle !== undefined && parentHandle !== null
         )
         .map(async (parentHandle) => {
           return await this.fetchPerson(parentHandle, treeData);
-        }),
+        })
     );
   }
 
   async ensureParentFamilies(
     personRef: string,
-    treeData: PBTreeData,
+    treeData: PBTreeData
   ): Promise<PBFamily[]> {
     const person = treeData.people.find((p) => p.handle === personRef);
     if (!person) {
@@ -188,7 +188,7 @@ export class TreeBuilder {
         .filter((familyRef) => familyRef !== undefined)
         .map(async (familyRef) => {
           return await this.fetchFamilyByRef(familyRef, treeData);
-        }),
+        })
     );
     return fams.filter((f) => f !== undefined);
   }
@@ -208,7 +208,7 @@ export class TreeBuilder {
     const families = await Promise.all(
       famRefs.map(async (familyRef) => {
         return await this.getFamilyByRef(familyRef, treeData);
-      }),
+      })
     );
 
     for (const fam of families) {
@@ -231,7 +231,7 @@ export class TreeBuilder {
     const families = await Promise.all(
       famRefs.map(async (familyRef) => {
         return await this.getFamilyByRef(familyRef, treeData);
-      }),
+      })
     );
 
     for (const fam of families) {
@@ -252,12 +252,12 @@ export class TreeBuilder {
       await Promise.all(
         [family.father_handle, family.mother_handle].map((parentHandle) => {
           return this.ensureParentFamilies(parentHandle, treeData);
-        }),
+        })
       )
     ).reduce((acc, val) => acc.concat(val), []);
 
     await Promise.all(
-      parentFamilies.map((f) => this.ensureParents(f, treeData)),
+      parentFamilies.map((f) => this.ensureParents(f, treeData))
     );
 
     await this.ensureChildren(family, treeData);
@@ -278,12 +278,12 @@ export class TreeBuilder {
       await Promise.all(
         [family.father_handle, family.mother_handle].map((parentHandle) => {
           return this.ensureParentFamilies(parentHandle, treeData);
-        }),
+        })
       )
     ).reduce((acc, val) => acc.concat(val), []);
 
     await Promise.all(
-      parentFamilies.map((f) => this.ensureParents(f, treeData)),
+      parentFamilies.map((f) => this.ensureParents(f, treeData))
     );
 
     await this.ensureChildren(family, treeData);
@@ -296,20 +296,25 @@ export class TreeBuilder {
   public async generate(
     famGrampsId: string,
     down: number,
-    up: number,
+    up: number
   ): Promise<PBTreeData> {
-    const families = [] as PBFamily[];
-    const people = [] as PBPerson[];
-    const familiesToDisplay = [] as PBFamily[];
-    const treeData = { families, people, familiesToDisplay } as PBTreeData;
+    try {
+      const families = [] as PBFamily[];
+      const people = [] as PBPerson[];
+      const familiesToDisplay = [] as PBFamily[];
+      const treeData = { families, people, familiesToDisplay } as PBTreeData;
 
-    console.log("generate");
+      console.log("generate");
 
-    const family = await this.getFamilyByGrampsId(famGrampsId, treeData);
+      const family = await this.getFamilyByGrampsId(famGrampsId, treeData);
 
-    await this.goDown(family, down, treeData);
-    await this.goUp(family, up, treeData);
+      await this.goDown(family, down, treeData);
+      await this.goUp(family, up, treeData);
 
-    return treeData;
+      return treeData;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 }
